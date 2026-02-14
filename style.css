@@ -1,0 +1,672 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Outfit:wght@300;400;500;700&family=Great+Vibes&display=swap');
+
+/* ===== VARIABLES ===== */
+:root {
+    --bg-dark: #0a0610;
+    --heart-pink: #ff2d55;
+    --heart-magenta: #ff3366;
+    --heart-light: #ff85a2;
+    --gold: #ffd700;
+    --white: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+/* ===== RESET ===== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== BODY ===== */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    touch-action: manipulation;
+}
+
+body {
+    background: var(--bg-dark);
+    color: var(--white);
+    font-family: 'Outfit', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Use dvh for mobile browsers that have dynamic toolbars */
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+/* ===== BACKGROUND CANVAS (stars) ===== */
+#bgCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ===== HEART CANVAS ===== */
+#heartCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ===== FLOATING HEARTS ===== */
+#floatingHearts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.floating-heart {
+    position: absolute;
+    bottom: -40px;
+    font-size: 20px;
+    opacity: 0;
+    animation: floatUp linear forwards;
+    pointer-events: none;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 0;
+        transform: translateY(0) rotate(0deg) scale(0.5);
+    }
+
+    10% {
+        opacity: 0.7;
+    }
+
+    90% {
+        opacity: 0.3;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-110vh) rotate(360deg) scale(1);
+    }
+}
+
+/* ===== CONTENT CARD ===== */
+#content {
+    display: none;
+    z-index: 10;
+    text-align: center;
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    padding: 2.5rem 2rem;
+    border-radius: 24px;
+    box-shadow:
+        0 0 80px rgba(255, 45, 85, 0.08),
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transform: translateY(40px) scale(0.9);
+    opacity: 0;
+    transition: opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    max-height: 85dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Smooth scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Custom scrollbar for the card */
+#content::-webkit-scrollbar {
+    width: 4px;
+}
+
+#content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#content::-webkit-scrollbar-thumb {
+    background: rgba(255, 45, 85, 0.3);
+    border-radius: 4px;
+}
+
+#content.visible {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* Sparkle animated border */
+.sparkle-border {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 26px;
+    background: linear-gradient(45deg,
+            transparent 30%,
+            rgba(255, 45, 85, 0.5) 50%,
+            transparent 70%);
+    background-size: 300% 300%;
+    animation: shimmer 3s ease-in-out infinite;
+    z-index: -1;
+    filter: blur(1px);
+}
+
+@keyframes shimmer {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+/* ===== TYPOGRAPHY ===== */
+.main-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(2rem, 8vw, 3.8rem);
+    line-height: 1.2;
+    margin-bottom: 0.8rem;
+    background: linear-gradient(135deg, #ff2d55, #ff6b8a, #ffd700, #ff2d55);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 4s ease infinite;
+    min-height: 2rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+@keyframes gradientShift {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.poem {
+    font-size: clamp(0.85rem, 3vw, 1.1rem);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+    min-height: 3rem;
+    white-space: pre-line;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.poem .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--heart-pink);
+    margin-left: 2px;
+    animation: blink 0.7s infinite;
+    vertical-align: text-bottom;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.question {
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.question.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== BUTTONS ===== */
+.buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
+    flex-wrap: wrap;
+}
+
+.buttons.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.btn {
+    padding: 12px 28px;
+    font-size: clamp(0.9rem, 3vw, 1.05rem);
+    font-family: 'Outfit', sans-serif;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    /* Minimum touch target 44px (Apple HIG) */
+    min-height: 48px;
+    min-width: 100px;
+    transition:
+        transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+        box-shadow 0.3s ease,
+        background 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    /* Prevent text selection on buttons */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.btn-icon {
+    font-size: 1.1rem;
+}
+
+.btn-yes {
+    background: linear-gradient(135deg, #ff2d55, #ff5e62);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(255, 45, 85, 0.5);
+}
+
+.btn-yes:hover,
+.btn-yes:active {
+    transform: scale(1.08);
+    box-shadow: 0 6px 30px rgba(255, 45, 85, 0.7);
+}
+
+.btn-yes::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+}
+
+.btn-yes:hover::after,
+.btn-yes:active::after {
+    transform: translateX(100%);
+}
+
+.btn-no {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.15s ease, box-shadow 0.3s ease, left 0.3s ease, top 0.3s ease;
+}
+
+.btn-no:hover,
+.btn-no:active {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* ===== RESPONSE MESSAGE ===== */
+.response-message {
+    min-height: 1.5rem;
+    margin-top: 1rem;
+    font-size: clamp(1.2rem, 5vw, 1.6rem);
+    font-family: 'Great Vibes', cursive;
+    font-weight: 400;
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.response-message.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* ===== CELEBRATION OVERLAY ===== */
+.celebration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    pointer-events: none;
+    display: none;
+}
+
+.celebration.active {
+    display: block;
+}
+
+.confetti-piece {
+    position: fixed;
+    z-index: 101;
+    pointer-events: none;
+}
+
+/* Heart-shaped confetti */
+.heart-confetti {
+    font-size: 24px;
+    animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg) scale(0);
+    }
+
+    10% {
+        transform: translateY(-50px) rotate(30deg) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(720deg) scale(0.5);
+    }
+}
+
+/* Sparkle dots */
+.sparkle-dot {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+    z-index: 101;
+    pointer-events: none;
+    animation: sparklePop 0.8s ease forwards;
+}
+
+@keyframes sparklePop {
+    0% {
+        opacity: 1;
+        transform: scale(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.5);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+/* =========================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================= */
+
+/* Very small phones (iPhone SE, 320px) */
+@media (max-width: 359px) {
+    #content {
+        padding: 1.5rem 1rem;
+        border-radius: 18px;
+        width: 94%;
+    }
+
+    .main-title {
+        font-size: 1.8rem;
+        min-height: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .poem {
+        font-size: 0.8rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        min-height: 2.5rem;
+    }
+
+    .question {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .buttons {
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        min-height: 44px;
+        min-width: 80px;
+        letter-spacing: 1px;
+    }
+
+    .btn-icon {
+        font-size: 0.9rem;
+    }
+
+    .response-message {
+        font-size: 1.1rem;
+        margin-top: 0.8rem;
+    }
+
+    .sparkle-border {
+        border-radius: 20px;
+    }
+}
+
+/* Small phones (375px - iPhone 12/13/14) */
+@media (min-width: 360px) and (max-width: 413px) {
+    #content {
+        padding: 1.8rem 1.3rem;
+        border-radius: 20px;
+        width: 92%;
+    }
+
+    .main-title {
+        font-size: 2.2rem;
+        min-height: 2.2rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .poem {
+        font-size: 0.9rem;
+        line-height: 1.65;
+        margin-bottom: 1.2rem;
+    }
+
+    .question {
+        font-size: 1.15rem;
+        margin-bottom: 1rem;
+    }
+
+    .btn {
+        padding: 11px 24px;
+        font-size: 0.9rem;
+        min-height: 46px;
+    }
+
+    .response-message {
+        font-size: 1.2rem;
+    }
+}
+
+/* Medium phones (414px - iPhone Plus, Pixel) */
+@media (min-width: 414px) and (max-width: 519px) {
+    #content {
+        padding: 2rem 1.5rem;
+        border-radius: 22px;
+        width: 90%;
+    }
+
+    .main-title {
+        font-size: 2.5rem;
+        margin-bottom: 0.7rem;
+    }
+
+    .poem {
+        font-size: 0.95rem;
+        margin-bottom: 1.3rem;
+    }
+
+    .question {
+        font-size: 1.2rem;
+    }
+
+    .btn {
+        padding: 12px 26px;
+        font-size: 0.95rem;
+    }
+}
+
+/* Large phones / Small tablets (520px - 767px) */
+@media (min-width: 520px) and (max-width: 767px) {
+    #content {
+        padding: 2.2rem 2rem;
+        width: 85%;
+        max-width: 500px;
+    }
+
+    .main-title {
+        font-size: 3rem;
+    }
+
+    .poem {
+        font-size: 1rem;
+    }
+}
+
+/* Tablets (768px+) */
+@media (min-width: 768px) {
+    #content {
+        padding: 2.5rem 2.5rem;
+        width: 500px;
+    }
+
+    .main-title {
+        font-size: 3.8rem;
+    }
+}
+
+/* Landscape on short screens */
+@media (max-height: 500px) {
+    #content {
+        padding: 1rem 1.5rem;
+        max-height: 90vh;
+        max-height: 90dvh;
+    }
+
+    .main-title {
+        font-size: 1.8rem;
+        min-height: 1.8rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .poem {
+        font-size: 0.8rem;
+        line-height: 1.5;
+        margin-bottom: 0.6rem;
+        min-height: auto;
+    }
+
+    .question {
+        font-size: 1rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .buttons {
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+
+    .btn {
+        padding: 8px 20px;
+        min-height: 40px;
+        font-size: 0.85rem;
+    }
+
+    .response-message {
+        font-size: 1rem;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Short phones (height < 700px, e.g. iPhone SE in portrait) */
+@media (max-height: 700px) and (max-width: 413px) {
+    #content {
+        padding: 1.3rem 1rem;
+        max-height: 80vh;
+        max-height: 80dvh;
+    }
+
+    .main-title {
+        font-size: 2rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .poem {
+        font-size: 0.82rem;
+        line-height: 1.55;
+        margin-bottom: 0.8rem;
+        min-height: auto;
+    }
+
+    .question {
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
+
+    .response-message {
+        font-size: 1.1rem;
+    }
+}

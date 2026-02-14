@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0610">
+    <title>Para ti, mi amor ❤️</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Starfield background -->
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- Heart drawing canvas -->
+    <canvas id="heartCanvas"></canvas>
+
+    <!-- Floating hearts layer -->
+    <div id="floatingHearts"></div>
+
+    <!-- Main content card -->
+    <div id="content">
+        <div class="sparkle-border"></div>
+        <h1 class="main-title" id="mainTitle"></h1>
+        <p class="poem" id="poem"></p>
+        <p class="question" id="question"></p>
+
+        <div class="buttons" id="buttonsContainer">
+            <button id="yesBtn" class="btn btn-yes">
+                <span class="btn-icon">💖</span> Sí
+            </button>
+            <button id="noBtn" class="btn btn-no">
+                <span class="btn-icon">🤔</span> No
+            </button>
+        </div>
+
+        <p id="responseMessage" class="response-message"></p>
+    </div>
+
+    <!-- Full-screen celebration overlay -->
+    <div id="celebration" class="celebration"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

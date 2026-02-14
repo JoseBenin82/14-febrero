@@ -12,6 +12,28 @@
 </head>
 
 <body>
+    <!-- Audio -->
+    <audio id="bgMusic" loop preload="auto" autoplay>
+        <source src="music/Romeo Santos - Propuesta Indecente Official Video.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Welcome splash (required by browsers to unlock audio) -->
+    <div id="welcomeSplash" class="welcome-splash">
+        <div class="welcome-content">
+            <div class="welcome-heart">💝</div>
+            <p class="welcome-text">Tengo algo especial para ti...</p>
+            <button id="startBtn" class="btn-start">
+                <span>Toca para comenzar</span>
+                <span class="start-icon">💖</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Music toggle button (top-right corner) -->
+    <button id="musicBtn" class="music-btn" aria-label="Reproducir música">
+        <span id="musicIcon">🎵</span>
+    </button>
+
     <!-- Starfield background -->
     <canvas id="bgCanvas"></canvas>
 

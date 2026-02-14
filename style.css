@@ -44,6 +44,107 @@ body {
 }
 
 /* ===== BACKGROUND CANVAS (stars) ===== */
+
+/* ===== WELCOME SPLASH ===== */
+.welcome-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: radial-gradient(ellipse at center, #1a0a1e 0%, #0a0610 70%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.welcome-splash.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.welcome-content {
+    text-align: center;
+    padding: 2rem;
+}
+
+.welcome-heart {
+    font-size: clamp(4rem, 15vw, 7rem);
+    animation: welcomeBounce 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(255, 45, 85, 0.5));
+}
+
+@keyframes welcomeBounce {
+
+    0%,
+    100% {
+        transform: scale(1) translateY(0);
+    }
+
+    30% {
+        transform: scale(1.15) translateY(-10px);
+    }
+
+    50% {
+        transform: scale(1) translateY(0);
+    }
+
+    70% {
+        transform: scale(1.08) translateY(-5px);
+    }
+}
+
+.welcome-text {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(1.6rem, 6vw, 2.8rem);
+    color: rgba(255, 255, 255, 0.9);
+    margin: 1.5rem 0 2rem;
+    text-shadow: 0 0 20px rgba(255, 45, 85, 0.3);
+}
+
+.btn-start {
+    background: linear-gradient(135deg, #ff2d55, #ff5e62);
+    color: #fff;
+    border: none;
+    padding: 16px 40px;
+    border-radius: 50px;
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1rem, 3.5vw, 1.2rem);
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 25px rgba(255, 45, 85, 0.5);
+    animation: startPulse 2s ease-in-out infinite;
+    min-height: 52px;
+    user-select: none;
+    -webkit-user-select: none;
+    text-transform: uppercase;
+}
+
+.btn-start:active {
+    transform: scale(0.95);
+}
+
+.start-icon {
+    font-size: 1.3rem;
+}
+
+@keyframes startPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 25px rgba(255, 45, 85, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 4px 40px rgba(255, 45, 85, 0.8), 0 0 60px rgba(255, 45, 85, 0.3);
+    }
+}
+
+
 #bgCanvas {
     position: fixed;
     top: 0;
@@ -52,6 +153,59 @@ body {
     height: 100%;
     z-index: 0;
     pointer-events: none;
+}
+
+/* ===== MUSIC BUTTON ===== */
+.music-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 500;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    min-height: 48px;
+    min-width: 48px;
+}
+
+.music-btn:hover,
+.music-btn:active {
+    transform: scale(1.1);
+    background: rgba(255, 45, 85, 0.2);
+    box-shadow: 0 0 20px rgba(255, 45, 85, 0.4);
+}
+
+.music-btn.playing {
+    animation: musicPulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 15px rgba(255, 45, 85, 0.4);
+    border-color: rgba(255, 45, 85, 0.4);
+}
+
+@keyframes musicPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 15px rgba(255, 45, 85, 0.3);
+    }
+
+    50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 25px rgba(255, 45, 85, 0.6);
+    }
 }
 
 /* ===== HEART CANVAS ===== */

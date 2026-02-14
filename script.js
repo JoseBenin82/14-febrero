@@ -17,6 +17,90 @@ document.addEventListener('DOMContentLoaded', function () {
     var responseMsg = document.getElementById('responseMessage');
     var floatingDiv = document.getElementById('floatingHearts');
     var celebration = document.getElementById('celebration');
+    var bgMusic = document.getElementById('bgMusic');
+    var musicBtn = document.getElementById('musicBtn');
+    var musicIcon = document.getElementById('musicIcon');
+    var splash = document.getElementById('welcomeSplash');
+    var startBtn = document.getElementById('startBtn');
+
+    /* ================================================================
+       MUSIC CONTROL
+       ================================================================ */
+    var musicPlaying = false;
+
+    function startMusic() {
+        bgMusic.volume = 0.5;
+        bgMusic.currentTime = 36;
+        bgMusic.play().then(function () {
+            musicPlaying = true;
+            musicBtn.classList.add('playing');
+            musicIcon.textContent = '🔊';
+        }).catch(function () { /* browser blocked it */ });
+    }
+
+    function toggleMusic() {
+        if (musicPlaying) {
+            bgMusic.pause();
+            musicBtn.classList.remove('playing');
+            musicIcon.textContent = '🎵';
+            musicPlaying = false;
+        } else {
+            startMusic();
+        }
+    }
+
+    musicBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleMusic();
+    });
+
+    /* ================================================================
+       SPLASH SCREEN & STARTUP
+       The heart animation and floating hearts are paused until the
+       user taps "Toca para comenzar". This guarantees the music
+       starts because it happens inside a user-gesture handler.
+       ================================================================ */
+    var appStarted = false;
+
+    // Try autoplay immediately (works if browser allows it)
+    bgMusic.volume = 0.5;
+    bgMusic.currentTime = 36;
+    bgMusic.play().then(function () {
+        musicPlaying = true;
+        musicBtn.classList.add('playing');
+        musicIcon.textContent = '🔊';
+    }).catch(function () {
+        // Blocked — the splash button will handle it
+    });
+
+    function beginExperience() {
+        if (appStarted) return;
+        appStarted = true;
+
+        // Start music (guaranteed in user gesture)
+        if (!musicPlaying) startMusic();
+
+        // Hide splash
+        splash.classList.add('hidden');
+        setTimeout(function () {
+            splash.style.display = 'none';
+        }, 900);
+
+        // Start the heart animation
+        requestAnimationFrame(mainLoop);
+
+        // Start floating hearts
+        floatIntervalId = setInterval(spawnFloatingHeart, floatInterval);
+        for (var h = 0; h < (isMobile ? 4 : 8); h++) {
+            setTimeout(spawnFloatingHeart, h * 300);
+        }
+    }
+
+    startBtn.addEventListener('click', beginExperience);
+    startBtn.addEventListener('touchend', function (e) {
+        e.preventDefault();
+        beginExperience();
+    });
 
     /* ================================================================
        STATE
@@ -42,21 +126,18 @@ document.addEventListener('DOMContentLoaded', function () {
         var w = window.innerWidth;
         var h = window.innerHeight;
 
-        // Background canvas
         bgCanvas.width = w * dpr;
         bgCanvas.height = h * dpr;
         bgCanvas.style.width = w + 'px';
         bgCanvas.style.height = h + 'px';
         bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-        // Heart canvas
         heartCanvas.width = w * dpr;
         heartCanvas.height = h * dpr;
         heartCanvas.style.width = w + 'px';
         heartCanvas.style.height = h + 'px';
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-        // Regenerate stars on resize
         initStars();
     }
 
@@ -71,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
     resize();
 
     /* ================================================================
-       VIEWPORT HELPERS (always use logical pixels)
+       VIEWPORT HELPERS
        ================================================================ */
     function vw() { return window.innerWidth; }
     function vh() { return window.innerHeight; }
@@ -80,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
        1. STARFIELD
        ================================================================ */
     var stars = [];
-    var starCount = isMobile ? 80 : 200; // Fewer stars on mobile for performance
+    var starCount = isMobile ? 80 : 200;
 
     function initStars() {
         stars = [];
@@ -115,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* ================================================================
-       2. HEART MATH (responsive scale)
+       2. HEART MATH
        ================================================================ */
     function heartX(t) { return 16 * Math.pow(Math.sin(t), 3); }
     function heartY(t) {
@@ -124,18 +205,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function getScale() {
         var minDim = Math.min(vw(), vh());
-        // Scale the heart based on screen size:
-        //   - On small screens (320px) ≈ 6.4 scale
-        //   - On medium (414px) ≈ 8.3
-        //   - On desktop (1920px) ≈ 38.4
-        // Clamped for visual consistency
         var s = minDim / 50;
         return Math.max(4, Math.min(s, 20));
     }
 
     function toCanvas(t) {
         var sc = getScale();
-        // Center vertically, offset slightly up
         var offsetY = vh() < 700 ? 10 : 30;
         return {
             x: heartX(t) * sc + vw() / 2,
@@ -223,14 +298,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* ================================================================
-       5. MAIN RENDER LOOP
+       5. MAIN RENDER LOOP (only starts after splash dismissed)
        ================================================================ */
     function mainLoop() {
         drawStars();
         ctx.clearRect(0, 0, vw(), vh());
 
         if (!heartComplete) {
-            var step = isMobile ? 4 : 3; // Slightly faster on mobile
+            var step = isMobile ? 4 : 3;
             for (var s = 0; s < step; s++) {
                 if (currentIdx <= totalPoints) {
                     var t = (currentIdx / totalPoints) * 2 * Math.PI;
@@ -247,7 +322,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             drawHeartOutline(heartPoints, 15);
 
-            // Glowing tip
             if (heartPoints.length > 0) {
                 var tip = heartPoints[heartPoints.length - 1];
                 ctx.beginPath();
@@ -272,13 +346,14 @@ document.addEventListener('DOMContentLoaded', function () {
         requestAnimationFrame(mainLoop);
     }
 
-    requestAnimationFrame(mainLoop);
+    // NOTE: mainLoop is NOT started here — it starts in beginExperience()
 
     /* ================================================================
        6. FLOATING HEARTS
        ================================================================ */
     var heartEmojis = ['❤️', '💖', '💕', '💗', '💓', '💘', '🩷', '♥️'];
-    var floatInterval = isMobile ? 1200 : 800; // Less frequent on mobile
+    var floatInterval = isMobile ? 1200 : 800;
+    var floatIntervalId = null;
 
     function spawnFloatingHeart() {
         var el = document.createElement('span');
@@ -293,8 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () { el.remove(); }, dur * 1000);
     }
 
-    setInterval(spawnFloatingHeart, floatInterval);
-    for (var h = 0; h < (isMobile ? 4 : 8); h++) { setTimeout(spawnFloatingHeart, h * 300); }
+    // NOTE: floating hearts are started in beginExperience(), not here
 
     /* ================================================================
        7. SHOW CARD WITH TYPEWRITER
@@ -348,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function () {
        8. BUTTON INTERACTIONS (mouse + touch)
        ================================================================ */
     yesBtn.addEventListener('click', function () {
-        responseMsg.innerHTML = '<span style="color:#ff2d55;font-size:clamp(1.4rem,5vw,2.2rem);">Te amo ❤️Acabas de aceptar que te Detone</span>';
+        responseMsg.innerHTML = '<span style="color:#ff2d55;font-size:clamp(1.4rem,5vw,2.2rem);">Te amo ❤️Acabas de aceptar que te Detone😈</span>';
         responseMsg.classList.add('show');
         launchCelebration();
     });
